@@ -396,14 +396,26 @@ class ProductFactory:
         # - values can be used as the strike
         # - use kwargs.get(...) for optional inputs
 
-        # strike = ...
-        # cap_or_floor = ...
-        # long_or_short = ...
-        # notional = ...
+        strike = kwargs.get("strike", values)
+        cap_or_floor = CapOrFloor.from_string(kwargs.get("cap_or_floor", "cap"))
+        long_or_short = LongOrShort.from_string(kwargs.get("long_or_short", "long"))
+        notional = kwargs.get("notional", 1e-4)
 
         # TODO:
         # Construct and return ProductRFRCapFloor
-        pass
+        product_cap_floor = ProductRFRCapFloor( effective_date= effective_date,
+                                  term_or_termination_date=termination_ttd,
+                                  on_index=data_convention.index_str,
+                                  strike=strike,
+                                  notional=notional,
+                                  cap_or_floor=cap_or_floor,
+                                  accrual_period=data_convention._acc_period,
+                                  accrual_basis=data_convention.acc_basis,
+                                  payment_offset=data_convention.payment_offset,
+                                  payment_business_day_convention=data_convention.business_day_convention,
+                                  payment_holiday_convention=data_convention.holiday_convention,
+                                  long_or_short=long_or_short)
+        return product_cap_floor
 
 
     ### utilities
